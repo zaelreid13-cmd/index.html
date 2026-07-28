@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HappyGo Watch - Dyslexia Edition</title>
+<style>
+/* ===== FONTS ===== */
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Atkinson Hyperlegible', 'OpenDyslexic', Arial, sans-serif;
+    padding: 20px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+/* ===== WATCH ===== */
+.watch {
+    background: #1A1A2E;
+    border-radius: 50%;
+    width: 320px;
+    height: 320px;
+    padding: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.9), 0 0 0 3px #333, 0 0 0 6px #1A1A2E;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.watch-screen {
+    background: #1A1A2E;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    padding: 25px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* ===== WATCH HEADER ===== */
+.watch-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 13px;
+    color: #aaa;
+    padding: 0 4px;
+}
+
+.watch-header .time {
+    color: #ddd;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.watch-header .status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+}
+
+.watch-header .status .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4CAF50;
+}
+
+/* ===== PROGRESS DOTS ===== */
+.progress-dots {
+    display: flex;
+    gap: 8px;
+    margin: 4px 0 6px;
+}
+
+.progress-dots span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #444;
+    transition: background 0.3s;
+    border: 2px solid #555;
+}
+
+.progress-dots span.completed {
+    background: #FF6B35;
+    border-color: #FF6B35;
+}
+
+.progress-dots span.active {
+    background: #FF6B35;
+    border-color: #FF6B35;
+    box-shadow: 0 0 15px rgba(255,107,53,0.4);
+}
+
+/* ===== STEP DISPLAY ===== */
+.step-display {
+    text-align: center;
+    margin: 6px 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.step-display .step-icon {
+    font-size: 44px;
+    margin-bottom: 6px;
+}
+
+.step-display .step-text {
+    font-size: 30px;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1.2;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 1px;
+    font-family: 'Atkinson Hyperlegible', 'OpenDyslexic', sans-serif;
+}
+
+.step-display .step-sub {
+    font-size: 16px;
+    color: #bbb;
+    margin-top: 2px;
+    min-height: 28px;
+    font-family: 'Atkinson Hyperlegible', 'OpenDyslexic', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+/* ===== COLOUR BAR ===== */
+.color-bar {
+    display: flex;
+    gap: 6px;
+    margin: 4px 0 6px;
+    width: 80%;
+    justify-content: center;
+}
+
+.color-bar span {
+    width: 30px;
+    height: 6px;
+    border-radius: 4px;
+    background: #333;
+    transition: background 0.3s;
+}
+
+.color-bar span.active-step {
+    background: #FF6B35;
+}
+
+.color-bar span.completed-step {
+    background: #FF6B35;
+    opacity: 0.4;
+}
+
+/* ===== VOICE BUTTON ===== */
+.btn-voice {
+    background: transparent;
+    color: #aaa;
+    border: 2px solid #555;
+    border-radius: 30px;
+    padding: 6px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 2px;
+    font-family: 'Atkinson Hyperlegible', 'OpenDyslexic', sans-serif;
+}
+
+.btn-voice:hover {
+    background: #555;
+    color: #fff;
+}
+
+.btn-voice:active {
+    transform: scale(0.95);
+}
+
+.btn-voice.speaking {
+    background: #FF6B35;
+    color: #fff;
+    border-color: #FF6B35;
+    animation: speakPulse 1s ease-in-out infinite;
+}
+
+@keyframes speakPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* ===== SUPPORT BUTTON ===== */
+.btn-support {
+    background: #FF6B35;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 28px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin: 4px 0 2px;
+    width: 100%;
+    max-width: 180px;
+    font-family: 'Atkinson Hyperlegible', 'OpenDyslexic', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.btn-support:hover {
+    background: #e55a2b;
+}
+
+.btn-support:active {
+    transform: scale(0.95);
+}
+
+.btn-support.requested {
+    background: #555;
+    cursor: default;
+}
+
+/* ===== CONTROLS ===== */
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.controls button {
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    min-width: 60px;
+    font-family: 'Atkinson Hyperlegible', 'OpenDyslexic', sans-serif;
+}
+
+.controls button:hover {
+    background: #444;
+}
+
+.controls button:active {
+    transform: scale(0.96);
+}
+
+.controls button.active-btn {
+    background: #FF6B35;
+}
+
+.controls button.active-btn:hover {
+    background: #e55a2b;
+}
+
+/* ===== STATUS MESSAGE ===== */
+.status-msg {
+    color: #aaa;
+    font-size: 16px;
+    text-align: center;
+    min-height: 30px;
+    margin-top: 6px;
+    padding: 8px 16px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    border: 1px solid #333;
+    max-width: 320px;
+    font-family: 'Atkinson Hyperlegible', 'OpenDyslexic', sans-serif;
+    line-height: 1.4;
+}
+
+.status-msg .highlight {
+    color: #FF6B35;
+    font-weight: 700;
+}
+
+.status-msg .success {
+    color: #4CAF50;
+}
+
+/* ===== FEATURE LABELS ===== */
+.feature-labels {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 13px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.feature-labels span {
+    background: #1a1a1a;
+    padding: 6px 14px;
+    border-radius: 12px;
+    border: 1px solid #2a2a2a;
+    font-family: 'Atkinson Hyperlegible', 'OpenDyslexic', sans-serif;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 380px) {
+    .watch {
+        width: 260px;
+        height: 260px;
+        padding: 14px;
+    }
+    .watch-screen {
+        padding: 18px 14px 14px;
+    }
+    .step-display .step-text {
+        font-size: 24px;
+        min-height: 50px;
+    }
+    .step-display .step-icon {
+        font-size: 34px;
+    }
+    .step-display .step-sub {
+        font-size: 14px;
+    }
+    .btn-support {
+        font-size: 15px;
+        padding: 10px 20px;
+        max-width: 140px;
+    }
+    .controls button {
+        font-size: 12px;
+        padding: 10px 14px;
+        min-width: 50px;
+    }
+    .watch-header {
+        font-size: 11px;
+    }
+    .status-msg {
+        font-size: 14px;
+    }
+    .color-bar span {
+        width: 24px;
+        height: 5px;
+    }
+    .btn-voice {
+        font-size: 12px;
+        padding: 5px 14px;
+    }
+}
+
+@media (max-width: 300px) {
+    .watch {
+        width: 210px;
+        height: 210px;
+        padding: 10px;
+    }
+    .watch-screen {
+        padding: 12px 10px 10px;
+    }
+    .step-display .step-text {
+        font-size: 18px;
+        min-height: 36px;
+    }
+    .step-display .step-icon {
+        font-size: 26px;
+    }
+    .step-display .step-sub {
+        font-size: 11px;
+    }
+    .btn-support {
+        font-size: 12px;
+        padding: 8px 14px;
+        max-width: 110px;
+    }
+    .controls button {
+        font-size: 10px;
+        padding: 8px 10px;
+        min-width: 40px;
+    }
+    .progress-dots span {
+        width: 8px;
+        height: 8px;
+    }
+    .color-bar span {
+        width: 18px;
+        height: 4px;
+    }
+    .btn-voice {
+        font-size: 10px;
+        padding: 4px 10px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== WATCH ===== -->
+    <div class="watch">
+        <div class="watch-screen">
+
+            <!-- Header -->
+            <div class="watch-header">
+                <span class="time" id="watchTime">1:45 PM</span>
+                <span class="status">
+                    <span class="dot"></span>
+                    <span id="connectionStatus">Connected</span>
+                </span>
+            </div>
+
+            <!-- Progress Dots (Visual) -->
+            <div class="progress-dots" id="progressDots">
+                <span class="completed"></span>
+                <span class="completed"></span>
+                <span class="completed"></span>
+                <span class="active"></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <!-- Colour Bar -->
+            <div class="color-bar" id="colorBar">
+                <span class="completed-step"></span>
+                <span class="completed-step"></span>
+                <span class="completed-step"></span>
+                <span class="active-step"></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <!-- Step Display -->
+            <div class="step-display">
+                <div class="step-icon" id="stepIcon">🚪</div>
+                <div class="step-text" id="stepText">Gate 7</div>
+                <div class="step-sub" id="stepSub">4 minute walk</div>
+            </div>
+
+            <!-- Voice Button -->
+            <button class="btn-voice" id="voiceBtn">🔊 Listen</button>
+
+            <!-- Support Button -->
+            <button class="btn-support" id="supportBtn">🖐️ NEED HELP?</button>
+
+        </div>
+    </div>
+
+    <!-- ===== CONTROLS ===== -->
+    <div class="controls">
+        <button data-step="0">🏠 Start</button>
+        <button data-step="1">✈️ Check-in</button>
+        <button data-step="2">🛂 Security</button>
+        <button data-step="3">🚪 Gate</button>
+        <button data-step="4">🎫 Boarding</button>
+        <button data-step="5">🏝️ Arrive</button>
+    </div>
+
+    <div class="controls">
+        <button id="resetBtn">↺ Reset</button>
+    </div>
+
+    <!-- ===== STATUS MESSAGE ===== -->
+    <div class="status-msg" id="statusMsg">
+        👋 Welcome to HappyGo • Tap a step below
+    </div>
+
+    <!-- ===== FEATURE LABELS ===== -->
+    <div class="feature-labels">
+        <span>🔊 Voice Guidance</span>
+        <span>🖐️ Silent Support</span>
+        <span>🎨 Colour Coding</span>
+        <span>📖 Dyslexia Font</span>
+        <span>🖼️ Visual Icons</span>
+    </div>
+
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const steps = [
+    { icon: '🏠', text: 'Head to Airport', sub: '30 minutes to check-in' },
+    { icon: '✈️', text: 'Check-in Desk 4', sub: 'Caribbean Airlines' },
+    { icon: '🛂', text: 'Security', sub: 'Quiet route available' },
+    { icon: '🚪', text: 'Gate 7', sub: '4 minute walk' },
+    { icon: '🎫', text: 'Boarding Now', sub: 'Gate 7' },
+    { icon: '🏝️', text: 'Arrived!', sub: 'Welcome to Barbados' }
+];
+
+const voiceMessages = [
+    "Your next step is to head to the airport. Check-in is in 30 minutes.",
+    "Go to Check-in Desk 4 for Caribbean Airlines.",
+    "Head to Security. A quiet route is available.",
+    "Go to Gate 7. It's a 4 minute walk.",
+    "Boarding now at Gate 7.",
+    "You have arrived. Welcome to Barbados."
+];
+
+let currentStep = 3;
+let isSupportRequested = false;
+let isSpeaking = false;
+
+// ============================================================
+// DOM REFS
+// ============================================================
+const stepIcon = document.getElementById('stepIcon');
+const stepText = document.getElementById('stepText');
+const stepSub = document.getElementById('stepSub');
+const progressDots = document.getElementById('progressDots');
+const colorBar = document.getElementById('colorBar');
+const supportBtn = document.getElementById('supportBtn');
+const statusMsg = document.getElementById('statusMsg');
+const watchTime = document.getElementById('watchTime');
+const voiceBtn = document.getElementById('voiceBtn');
+
+// ============================================================
+// SPEECH SYNTHESIS
+// ============================================================
+function speakMessage(text) {
+    if (!window.speechSynthesis) {
+        setStatus('🔊 Voice not supported on this device', '#aaa');
+        return;
+    }
+
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    isSpeaking = true;
+    voiceBtn.textContent = '🔊 Speaking...';
+    voiceBtn.classList.add('speaking');
+
+    utterance.onend = function() {
+        isSpeaking = false;
+        voiceBtn.textContent = '🔊 Listen';
+        voiceBtn.classList.remove('speaking');
+    };
+
+    utterance.onerror = function() {
+        isSpeaking = false;
+        voiceBtn.textContent = '🔊 Listen';
+        voiceBtn.classList.remove('speaking');
+        setStatus('🔊 Could not play voice', '#aaa');
+    };
+
+    window.speechSynthesis.speak(utterance);
+    setStatus('🔊 Speaking: "' + text + '"', '#FF6B35');
+}
+
+// ============================================================
+// UPDATE FUNCTIONS
+// ============================================================
+function updateWatch(index) {
+    currentStep = Math.max(0, Math.min(index, steps.length - 1));
+    const step = steps[currentStep];
+
+    stepIcon.textContent = step.icon;
+    stepText.textContent = step.text;
+    stepSub.textContent = step.sub;
+
+    // Update progress dots
+    const dots = progressDots.querySelectorAll('span');
+    dots.forEach((dot, i) => {
+        dot.className = '';
+        if (i < currentStep) dot.classList.add('completed');
+        else if (i === currentStep) dot.classList.add('active');
+    });
+
+    // Update colour bar
+    const colors = colorBar.querySelectorAll('span');
+    colors.forEach((color, i) => {
+        color.className = '';
+        if (i < currentStep) color.classList.add('completed-step');
+        else if (i === currentStep) color.classList.add('active-step');
+    });
+
+    // Reset support if active
+    if (isSupportRequested) {
+        isSupportRequested = false;
+        supportBtn.textContent = '🖐️ NEED HELP?';
+        supportBtn.classList.remove('requested');
+    }
+
+    // Cancel speaking if active
+    if (isSpeaking) {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        voiceBtn.textContent = '🔊 Listen';
+        voiceBtn.classList.remove('speaking');
+    }
+
+    setStatus('📍 ' + step.icon + ' ' + step.text + ' • ' + step.sub, '#aaa');
+    updateTime();
+}
+
+function updateTime() {
+    const now = new Date();
+    let h = now.getHours();
+    let m = now.getMinutes();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    watchTime.textContent = h + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+}
+
+function setStatus(msg, color = '#aaa') {
+    statusMsg.innerHTML = msg;
+    statusMsg.style.color = color;
+}
+
+// ============================================================
+// SUPPORT REQUEST
+// ============================================================
+function requestSupport() {
+    if (isSupportRequested) {
+        setStatus('✅ Support is on the way', '#4CAF50');
+        return;
+    }
+
+    isSupportRequested = true;
+    supportBtn.textContent = '⏳ SENT';
+    supportBtn.classList.add('requested');
+
+    const step = steps[currentStep];
+    setStatus(
+        '🟢 <span class="success">Support request sent!</span> Staff at ' + step.text,
+        '#4CAF50'
+    );
+
+    // Speak the confirmation
+    speakMessage('Support request sent. Staff have been notified.');
+
+    setTimeout(() => {
+        if (isSupportRequested) {
+            isSupportRequested = false;
+            supportBtn.textContent = '🖐️ NEED HELP?';
+            supportBtn.classList.remove('requested');
+            setStatus('📍 ' + step.icon + ' ' + step.text + ' • ' + step.sub, '#aaa');
+        }
+    }, 5000);
+}
+
+// ============================================================
+// RESET
+// ============================================================
+function resetAll() {
+    if (isSpeaking) {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        voiceBtn.textContent = '🔊 Listen';
+        voiceBtn.classList.remove('speaking');
+    }
+
+    isSupportRequested = false;
+    supportBtn.textContent = '🖐️ NEED HELP?';
+    supportBtn.classList.remove('requested');
+
+    updateWatch(3);
+    setStatus('↺ Reset complete • Back to Gate 7', '#aaa');
+}
+
+// ============================================================
+// EVENT LISTENERS
+// ============================================================
+
+// Step buttons
+document.querySelectorAll('[data-step]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.step);
+        updateWatch(idx);
+    });
+});
+
+// Support button
+supportBtn.addEventListener('click', requestSupport);
+
+// Voice button
+voiceBtn.addEventListener('click', () => {
+    if (isSpeaking) {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        voiceBtn.textContent = '🔊 Listen';
+        voiceBtn.classList.remove('speaking');
+        setStatus('🔊 Stopped', '#aaa');
+        return;
+    }
+    speakMessage(voiceMessages[currentStep]);
+});
+
+// Reset button
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        updateWatch(currentStep + 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        updateWatch(currentStep - 1);
+    } else if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        requestSupport();
+    } else if (e.key === 'v' || e.key === 'V') {
+        voiceBtn.click();
+    } else if (e.key === 'r' || e.key === 'R') {
+        resetAll();
+    }
+});
+
+// ============================================================
+// INIT
+// ============================================================
+updateWatch(3);
+updateTime();
+setStatus('👋 Welcome to HappyGo • Tap a step below', '#aaa');
+
+setInterval(updateTime, 10000);
+
+console.log('📖 HappyGo Watch - Dyslexia Edition');
+console.log('📌 Controls:');
+console.log('  → Arrow keys: Navigate steps');
+console.log('  → Space/Enter: Request support');
+console.log('  → V: Voice guidance');
+console.log('  → R: Reset');
+</script>
+
+</body>
+</html>
